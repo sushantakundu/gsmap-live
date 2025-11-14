@@ -52,6 +52,29 @@
             font-size: 24px;
             letter-spacing: 1px;
         }
+
+        /* 🔁 Minimal Switch Icon */
+        #switchIcon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: #222;
+            border: 2px solid #00eaff;
+            color: #00eaff;
+            font-size: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00eaff;
+            opacity: 1;
+            transition: opacity 0.5s ease-out, transform 0.2s ease;
+        }
+
+        #switchIcon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #00eaff;
+        }
     </style>
 </head>
 
@@ -65,6 +88,9 @@
 
     <!-- Fullscreen Button -->
     <button id="fsBtn" onclick="toggleFullscreen()">Fullscreen</button>
+
+    <!-- 🔁 Page Switch Icon -->
+    <button id="switchIcon" onclick="goToOtherPage()">🔁</button>
 
     <script>
         // ===============================
@@ -93,15 +119,21 @@
 
 
         // ===============================
-        // Hide Fullscreen Button After 5s
+        // Hide Buttons After 5 Seconds
         // ===============================
         let fsBtn = document.getElementById("fsBtn");
+        let switchIcon = document.getElementById("switchIcon");
         let hideTimeout;
 
         function resetHideTimer() {
             fsBtn.style.opacity = 1;
+            switchIcon.style.opacity = 1;
+
             clearTimeout(hideTimeout);
-            hideTimeout = setTimeout(() => { fsBtn.style.opacity = 0; }, 5000);
+            hideTimeout = setTimeout(() => {
+                fsBtn.style.opacity = 0;
+                switchIcon.style.opacity = 0;
+            }, 5000);
         }
 
         document.onmousemove = resetHideTimer;
@@ -152,6 +184,14 @@
 
         setInterval(updateClock, 1000);
         updateClock();
+
+
+        // ===============================
+        // 🔁 Switch Page
+        // ===============================
+        function goToOtherPage() {
+            window.location.href = "https://sushantakundu.github.io/Web_Rainfall_display/";
+        }
     </script>
 
 </body>
