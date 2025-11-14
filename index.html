@@ -3,33 +3,31 @@
 <head>
     <title>Live GSMaP Combined Animation</title>
 
-    <!-- Auto-refresh every 10 minutes -->
+    <!-- Auto-refresh entire page every 10 minutes -->
     <meta http-equiv="refresh" content="600">
 
     <style>
         body {
             background: #000;
+            text-align: center;
             margin: 0;
             padding: 0;
-            text-align: center;
             font-family: Arial, sans-serif;
         }
         h2, p {
             color: white;
         }
-        #gifFrame {
-            width: 95vw;
-            height: 88vh;
+        #gif {
+            max-width: 95vw;
+            max-height: 85vh;
             border: none;
             margin-top: 10px;
         }
-
-        /* Fullscreen button styling */
         #fsBtn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #1e90ff;
+            background: #007bff;
             color: white;
             border: none;
             padding: 12px 20px;
@@ -38,42 +36,39 @@
             cursor: pointer;
             box-shadow: 0px 0px 10px #00aaff;
         }
-
         #fsBtn:hover {
-            background: #0f78d1;
+            background: #0066d6;
         }
     </style>
 </head>
+
 <body>
 
     <h2>Live GSMaP Combined Animation</h2>
 
-    <iframe id="gifFrame"
-        src="https://www.dropbox.com/scl/fi/3xacp3m92yr170ndavyap/GSMap_Combined.gif?rlkey=wbuauqv3w8c0gg7su5ux077lw&dl=0">
-    </iframe>
+    <!-- Load GIF directly from GitHub repo -->
+    <img id="gif" src="GSMap_Combined.gif?cb=12345">
 
-    <p>Auto-updated every 10 minutes<br>
-       Powered by Dropbox + GitHub Pages</p>
+    <p>Auto-updates every 10 minutes</p>
 
     <!-- Fullscreen button -->
     <button id="fsBtn" onclick="toggleFullscreen()">Fullscreen</button>
 
-
     <script>
+        // Fullscreen toggle
         function toggleFullscreen() {
-            const elem = document.documentElement;
-
-            // If not fullscreen → enter fullscreen
+            let elem = document.documentElement;
             if (!document.fullscreenElement) {
-                elem.requestFullscreen().catch(err => {
-                    alert(`Error enabling fullscreen: ${err.message}`);
-                });
-            } 
-            else {
-                // If fullscreen → exit fullscreen
+                elem.requestFullscreen();
+            } else {
                 document.exitFullscreen();
             }
         }
+
+        // Cache-busting every 10 minutes
+        setInterval(() => {
+            document.getElementById("gif").src = "GSMap_Combined.gif?cb=" + Date.now();
+        }, 600000);
     </script>
 
 </body>
