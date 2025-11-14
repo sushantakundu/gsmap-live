@@ -12,14 +12,21 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-family: Arial, sans-serif;
         }
+
+        /* GIF styling with fade-in */
         #gif {
             width: 100vw;
             height: 100vh;
-            object-fit: contain; /* keeps aspect ratio */
+            object-fit: contain;
             display: block;
             margin: 0 auto;
+            opacity: 0;
+            transition: opacity 1s ease-in;
         }
+
+        /* Fullscreen button */
         #fsBtn {
             position: fixed;
             bottom: 20px;
@@ -32,23 +39,49 @@
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0px 0px 8px #00aaff;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
         }
-        #fsBtn:hover {
-            background: #0066d6;
+
+        /* Live clock */
+        #clock {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            color: #00eaff;
+            font-size: 24px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- GIF only -->
+    <!-- Digital Clock -->
+    <div id="clock"></div>
+
+    <!-- GIF Display -->
     <img id="gif" src="GSMap_Combined.gif?cb=12345">
 
-    <!-- Fullscreen button -->
+    <!-- Fullscreen Button -->
     <button id="fsBtn" onclick="toggleFullscreen()">Fullscreen</button>
 
     <script>
-        // Fullscreen toggle
+        // ===============================
+        // Auto-Fullscreen on Page Load
+        // ===============================
+        function autoFullscreen() {
+            let elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(() => {});
+            }
+        }
+        setTimeout(autoFullscreen, 1000);
+
+
+        // ===============================
+        // Fullscreen Button Toggle
+        // ===============================
         function toggleFullscreen() {
             let elem = document.documentElement;
             if (!document.fullscreenElement) {
@@ -58,10 +91,67 @@
             }
         }
 
-        // Cache-busting every 10 minutes
-        setInterval(() => {
-            document.getElementById("gif").src = "GSMap_Combined.gif?cb=" + Date.now();
-        }, 600000);
+
+        // ===============================
+        // Hide Fullscreen Button After 5s
+        // ===============================
+        let fsBtn = document.getElementById("fsBtn");
+        let hideTimeout;
+
+        function resetHideTimer() {
+            fsBtn.style.opacity = 1;
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => { fsBtn.style.opacity = 0; }, 5000);
+        }
+
+        document.onmousemove = resetHideTimer;
+        document.ontouchstart = resetHideTimer;
+
+        resetHideTimer();
+
+
+        // ===============================
+        // Auto-Retry GIF Loading if fails
+        // ===============================
+        let gif = document.getElementById("gif");
+
+        function loadGif() {
+            gif.style.opacity = 0;  // reset fade-in
+            const newSrc = "GSMap_Combined.gif?cb=" + Date.now();
+            gif.src = newSrc;
+
+            gif.onload = () => {
+                gif.style.opacity = 1;  // fade-in
+            };
+
+            gif.onerror = () => {
+                console.log("GIF failed to load. Retrying in 5 seconds...");
+                setTimeout(loadGif, 5000);
+            };
+        }
+
+        // Initial GIF load with fade-in
+        loadGif();
+
+        // Refresh GIF every 10 minutes (cache-busted)
+        setInterval(loadGif, 600000);
+
+
+        // ===============================
+        // Live Digital Clock
+        // ===============================
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString("en-IN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            });
+            document.getElementById("clock").textContent = timeString;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 
 </body>
